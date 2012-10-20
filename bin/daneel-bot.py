@@ -3,8 +3,8 @@
 
 """Daneel bot."""
 
-import daneel
+from daneel import script
 
 if __name__ == '__main__':
-    daneel.bot.run()
+    script.main()
 

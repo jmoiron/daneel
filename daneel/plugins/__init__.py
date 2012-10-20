@@ -5,5 +5,5 @@
 
 from daneel.plugins.urls import *
 
-enabled = [shorten, summarize]
+enabled = [shorten, summarize, test]
 

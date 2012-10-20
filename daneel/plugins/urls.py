@@ -21,6 +21,11 @@ def summarize(context):
     return "\n".join(summaries)
 summarize.events = ["PRIVMSG"]
 
+def test(context):
+    import ipdb; ipdb.set_trace();
+    pass
+test.commands = ['test']
+
 def shorten(context):
     pass
 shorten.commands = ['shorten']
