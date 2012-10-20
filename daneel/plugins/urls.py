@@ -26,6 +26,11 @@ def test(context):
     pass
 test.commands = ['test']
 
+def is_registered(context):
+    import ipdb; ipdb.set_trace();
+    pass
+is_registered.commands = ['isreg']
+
 def shorten(context):
     pass
 shorten.commands = ['shorten']
