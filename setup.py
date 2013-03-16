@@ -18,7 +18,7 @@ setup(
     name='daneel',
     version=version,
     description="",
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         'Development Status :: 1 - Planning',

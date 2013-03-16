@@ -28,11 +28,11 @@ def summarize(context):
             context.channel.say(summary)
 
 def esper():
-    user = girc.User("daneel_mk2", "R. Daneel Olivaw")
+    user = girc.User("daneel", "R. Daneel Olivaw")
     server = girc.Server("irc.esper.net")
     channels = {
         "#stevens": girc.Channel("#stevens"),
-        "#daneeltest": girc.Channel("#daneeltest"),
+        #"#daneeltest": girc.Channel("#daneeltest"),
     }
     for channel in channels.values():
         channel.add_handler(summarize)
