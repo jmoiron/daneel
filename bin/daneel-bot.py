@@ -3,8 +3,7 @@
 
 """Daneel bot."""
 
-from daneel import girc
-from daneel import utils
+from daneel import girc, utils
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -48,14 +47,13 @@ def rizon():
     channels["#danger-fourpence"].add_handler(summarize)
     return server, user, channels.values()
 
-def run(bot):
-    bot.start()
-    bot.wait()
-
 bots = [girc.Bot(*esper()), girc.Bot(*rizon())]
-for bot in bots:
-    bot.start()
+try:
+    for bot in bots:
+        bot.start()
 
-for bot in bots:
-    bot.wait()
+    for bot in bots:
+        bot.wait()
+except KeyboardInterrupt:
+    pass
 
