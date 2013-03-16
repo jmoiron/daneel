@@ -6,26 +6,13 @@
 from daneel import girc, utils
 import logging
 
+from daneel.plugins.summarize import summarize
+from daneel.plugins.shorten import Shorten
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logging.getLogger("requests").setLevel(logging.ERROR)
 
-
-def printer(context):
-    print context
-
-def summarize(context):
-    msg = context.msg
-    if msg.startswith("."):
-        return
-    urls = utils.find_urls(msg)
-    if not urls:
-        return
-    summaries = map(utils.get_summary, urls)
-    if context.channel:
-        for summary in summaries:
-            logger.info(summary)
-            context.channel.say(summary)
 
 def esper():
     user = girc.User("daneel", "R. Daneel Olivaw")
@@ -36,6 +23,7 @@ def esper():
     }
     for channel in channels.values():
         channel.add_handler(summarize)
+        channel.add_handler(Shorten())
     return server, user, channels.values()
 
 def rizon():
@@ -45,6 +33,7 @@ def rizon():
         "#danger-fourpence": girc.Channel("#danger-fourpence"),
     }
     channels["#danger-fourpence"].add_handler(summarize)
+    channels["#danger-fourpence"].add_handler(Shorten())
     return server, user, channels.values()
 
 bots = [girc.Bot(*esper()), girc.Bot(*rizon())]

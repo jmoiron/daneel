@@ -12,26 +12,12 @@ import os
 import re
 import logging
 import traceback
+from daneel import utils
 
 logger = logging.getLogger(__name__)
 
-white,black,red,green,yellow,blue,purple = range(89,96)
-def color(string, color=green, bold=False):
-    """Usage: color("foo", red, bold=True)"""
-    return '\033[%s%sm' % ('01;' if bold else '', color) + str(string) + '\033[0m'
-
-def applyable(match):
-    if not match:
-        return lambda x: True
-    if callable(match):
-        return match
-    if isinstance(match, basestring):
-        regex = re.compile(match)
-        return lambda x: regex.search(x)
-    raise ValueError("Could not make applyable from %r" % match)
-
 def handle_on(function, type=None, sender=None, target=None, msg=None):
-    type, sender, target, msg = map(applyable, (type, sender, target, msg))
+    type, sender, target, msg = map(utils.applyable, (type, sender, target, msg))
     def handler(ctx):
         if not ctx.is_valid:
             return
@@ -41,23 +27,6 @@ def handle_on(function, type=None, sender=None, target=None, msg=None):
 
 def privmsg(function):
     return handle_on(function, type=lambda m: m == "PRIVMSG")
-
-def decode_damnit(string, encodings):
-    for encoding in encodings:
-        try:
-            return string.decode(encoding)
-        except:
-            pass
-    return None
-
-def utf8(string):
-    if isinstance(string, unicode):
-        return string.encode("utf-8")
-    decoded = decode_damnit(string, ("utf-8", "L1", "L2", "shift_jis","utf-16", "cp1252", "cp1251", "cp1250"))
-    if decoded:
-        return decoded.encode("utf-8")
-    else:
-        return string # pray
 
 class Context(object):
     def __init__(self, line, server):
@@ -149,7 +118,7 @@ class Server(object):
 
     def _log(self, msg, incoming=True):
         status = "<<:" if incoming else ">>:"
-        status = color(status, yellow if incoming else green)
+        status = utils.color(status, utils.yellow if incoming else utils.green)
         logger.info("%s `%s`" % (status, msg))
 
     def read(self):
@@ -178,7 +147,7 @@ class Server(object):
 
     def send(self, msg):
         self._log(msg, False)
-        msg = utf8(msg)
+        msg = utils.utf8_damnit(msg)
         self.socket.send("%s\r\n" % msg)
 
     def say(self, to, msg):
@@ -187,7 +156,7 @@ class Server(object):
     def waitfor(self, matcher, raw=True):
         if isinstance(matcher, basestring):
             raw = True
-        matcher = applyable(matcher)
+        matcher = utils.applyable(matcher)
         result = event.AsyncResult()
         def waiter(line):
             if matcher(line):
