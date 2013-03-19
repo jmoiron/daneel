@@ -16,7 +16,12 @@ def summarize(context):
     urls = weblib.find_urls(msg)
     if not urls:
         return
-    summaries = map(weblib.get_summary, urls)
+    summaries = []
+    for url in urls:
+        try:
+            summaries.append(weblib.get_summary(url))
+        except:
+            pass
     if context.channel:
         for summary in summaries:
             context.channel.say(summary)

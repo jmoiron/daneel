@@ -6,6 +6,7 @@
 import re
 import requests
 import urlparse
+import traceback
 import json
 
 from lxml.cssselect import CSSSelector as cs
@@ -32,6 +33,7 @@ def get_summary(url):
     content = page.content
     content = utils.utf8_damnit(content)
     return summarize(content, url)
+
 
 def summarize(content, url=""):
     """Return a summary for an html document.  If a URL is passed, it may be
