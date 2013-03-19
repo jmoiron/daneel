@@ -151,7 +151,10 @@ class Server(object):
         self.socket.send("%s\r\n" % msg)
 
     def say(self, to, msg):
-        self.send("PRIVMSG %s :%s" % (to, msg))
+        msgs = msg.split("\n")
+        # rudimentary flood protection...
+        for msg in msgs[:4]:
+            self.send("PRIVMSG %s :%s" % (to, msg))
 
     def waitfor(self, matcher, raw=True):
         if isinstance(matcher, basestring):
