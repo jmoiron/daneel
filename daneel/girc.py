@@ -58,6 +58,7 @@ class User(object):
 
     def identify(self, server):
         if self.password:
+            server.waitfor("This nickname is registered")
             server.say("nickserv", "identify %s" % self.password)
             server.waitfor("Password accepted")
 
