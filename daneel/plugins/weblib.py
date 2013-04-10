@@ -13,6 +13,8 @@ from lxml.cssselect import CSSSelector as cs
 from lxml.html import document_fromstring
 from daneel import utils
 
+ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31"
+
 def text(selector, html):
     res = cs(selector)(html)
     if not res:
@@ -29,7 +31,7 @@ def first(selector, html):
 
 def get_summary(url):
     """Get a summary for a url."""
-    page = requests.get(url)
+    page = requests.get(url, headers={'User-Agent': ua})
     content = page.content
     content = utils.utf8_damnit(content)
     return summarize(content, url)
