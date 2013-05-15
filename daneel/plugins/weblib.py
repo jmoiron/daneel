@@ -22,6 +22,7 @@ def text(selector, html):
     if res and len(res) == 1:
         return res[0].text_content().strip()
     res = map(lambda x: x.text_content().strip(), res)
+    return "".join(res)
 
 def first(selector, html):
     res = cs(selector)(html)
@@ -44,7 +45,7 @@ def summarize(content, url=""):
     if url:
         parsed = urlparse.urlparse(url)
         if parsed.netloc.endswith("twitter.com") and "status" in url:
-            tweet = text(".tweet-text", html)
+            tweet = text(".permalink-tweet .tweet-text", html)
             try:
                 username = cs(".permalink-tweet")(html)[0].attrib["data-screen-name"]
                 return "@%s: %s" % (username, tweet)
