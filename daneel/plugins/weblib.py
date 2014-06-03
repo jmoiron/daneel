@@ -33,8 +33,11 @@ def first(selector, html):
 def get_summary(url):
     """Get a summary for a url."""
     page = requests.get(url, headers={'User-Agent': ua})
-    content = page.content
-    content = utils.utf8_damnit(content)
+    try:
+        content = page.text
+    except:
+        content = page.content
+        content = utils.utf8_damnit(content)
     return summarize(content, url)
 
 
@@ -45,7 +48,7 @@ def summarize(content, url=""):
     if url:
         parsed = urlparse.urlparse(url)
         if parsed.netloc.endswith("twitter.com") and "status" in url:
-            tweet = text(".original-tweet .tweet-text", html)
+            tweet = text(".js-original-tweet .tweet-text", html)
             try:
                 username = cs(".permalink-tweet")(html)[0].attrib["data-screen-name"]
                 return "@%s: %s" % (username, tweet)
