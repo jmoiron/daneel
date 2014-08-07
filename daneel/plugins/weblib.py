@@ -32,6 +32,8 @@ def first(selector, html):
 
 def get_summary(url):
     """Get a summary for a url."""
+    if "yelp.com" in url:
+        return "Yelp is not supported because they IP blocked the server daneel runs on."
     page = requests.get(url, headers={'User-Agent': ua})
     try:
         content = page.text
