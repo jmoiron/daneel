@@ -4,6 +4,7 @@
 """Daneel bot."""
 
 from daneel import girc, utils
+from gevent.pool import Pool
 import logging
 
 from daneel.plugins.summarize import summarize
@@ -31,18 +32,17 @@ def rizon():
     server = girc.Server("irc.rizon.net")
     channels = {
         "#danger-fourpence": girc.Channel("#danger-fourpence"),
+        "#arlong-park": girc.Channel("#arlong-park"),
     }
     channels["#danger-fourpence"].add_handler(summarize)
     channels["#danger-fourpence"].add_handler(Shorten())
+    channels["#arlong-park"].add_handler(summarize)
+    channels["#arlong-park"].add_handler(Shorten())
     return server, user, channels.values()
 
 bots = [girc.Bot(*esper()), girc.Bot(*rizon())]
 try:
-    for bot in bots:
-        bot.start()
-
-    for bot in bots:
-        bot.wait()
+    Pool(len(bots)).map(lambda bot: bot.forever(), bots)
 except KeyboardInterrupt:
     pass
 

@@ -12,6 +12,7 @@ import os
 import re
 import logging
 import traceback
+import time
 from daneel import utils
 
 logger = logging.getLogger(__name__)
@@ -66,6 +67,9 @@ class User(object):
         server.send("NICK %s" % self.nick)
         server.send("USER %s 0 * :%s" % (self.nick, self.realname))
         self.identify(server)
+
+    def __str__(self):
+        return "%s%s" % (self.nick, " (w/ password)" if self.password else "")
 
 class Channel(object):
     def __init__(self, name):
@@ -126,6 +130,9 @@ class Server(object):
         sockfile = self.socket.makefile()
         while True:
             line = sockfile.readline()
+            # if we read nothing, that means we've disconnected
+            if not line:
+                return
             line = line.strip()
             self._log(line)
             self.handle(line)
@@ -181,6 +188,9 @@ class Server(object):
         channel.server = self
         self.handlers += channel.handlers
 
+    def __str__(self):
+        return "%s:%s" % (self.host, self.port)
+
 class Bot(object):
     def __init__(self, server, user, channels):
         self.server = server
@@ -188,6 +198,8 @@ class Bot(object):
         self.channels = channels
 
     def start(self):
+        status = utils.color("**:", utils.blue)
+        logger.info("%s Connecting to %s as %s" % (status, self.server, self.user))
         self.server.connect(self.user)
         if not self.user.password:
             self.server.waitfor("MODE")
@@ -197,4 +209,12 @@ class Bot(object):
 
     def wait(self):
         self.server.wait()
+
+    def forever(self):
+        while True:
+            self.start()
+            self.wait()
+            status = utils.color("**:", utils.red)
+            logger.info("%s Server %s disconnected.  Reconnecting in 30 seconds..." % (status, self.server))
+            time.sleep(30)
 
