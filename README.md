@@ -1,5 +1,7 @@
 ## daneel
 
+[![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/jmoiron/daneel/master/LICENSE)
+
 Daneel is an irc [robot](http://en.wikipedia.org/wiki/R._Daneel_Olivaw).  He runs on a few rooms I'm in doing various things for me.
 
 ### commands
