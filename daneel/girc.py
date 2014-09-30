@@ -115,11 +115,17 @@ class Server(object):
         if self.connected:
             return
         self.socket = socket.socket()
+        self.socket.settimeout(30)
         self.socket.connect((self.host, self.port))
+        logger.info("%s connected to %s" % (utils.color("iii", utils.green), self.host))
         self.read_thread = gevent.spawn(self.read)
         self.waitfor("Found your hostname")
         self.connected = True
         user.initialize(self)
+
+    def disconnect(self):
+        self.socket.shutdown(socket.SHUT_RDWR)
+        self.socket.close()
 
     def _log(self, msg, incoming=True):
         status = "<<:" if incoming else ">>:"
@@ -216,5 +222,9 @@ class Bot(object):
             self.wait()
             status = utils.color("**:", utils.red)
             logger.info("%s Server %s disconnected.  Reconnecting in 30 seconds..." % (status, self.server))
+            try:
+                self.server.disconnect()
+            except Exception as e:
+                logger.error("EE Error: %s", e)
             time.sleep(30)
 

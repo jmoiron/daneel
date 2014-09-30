@@ -10,14 +10,14 @@ import logging
 from daneel.plugins.summarize import summarize
 from daneel.plugins.shorten import Shorten
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)5s %(msg)s')
 logger = logging.getLogger(__name__)
 logging.getLogger("requests").setLevel(logging.ERROR)
 
 
 def esper():
     user = girc.User("daneel", "R. Daneel Olivaw")
-    server = girc.Server("irc.esper.net")
+    server = girc.Server("irc.na.esper.net")
     channels = {
         "#stevens": girc.Channel("#stevens"),
         #"#daneeltest": girc.Channel("#daneeltest"),
