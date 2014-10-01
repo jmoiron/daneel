@@ -66,7 +66,6 @@ class User(object):
     def initialize(self, server):
         server.send("NICK %s" % self.nick)
         server.send("USER %s 0 * :%s" % (self.nick, self.realname))
-        self.identify(server)
 
     def __str__(self):
         return "%s%s" % (self.nick, " (w/ password)" if self.password else "")
@@ -119,9 +118,10 @@ class Server(object):
         self.socket.connect((self.host, self.port))
         logger.info("%s connected to %s" % (utils.color("iii", utils.green), self.host))
         self.read_thread = gevent.spawn(self.read)
-        self.waitfor("Found your hostname")
-        self.connected = True
         user.initialize(self)
+        self.waitfor("Found your hostname")
+        user.identify(self)
+        self.connected = True
 
     def disconnect(self):
         self.socket.shutdown(socket.SHUT_RDWR)
