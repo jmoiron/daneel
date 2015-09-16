@@ -50,7 +50,7 @@ def summarize(content, url=""):
     if url:
         parsed = urlparse.urlparse(url)
         if parsed.netloc.endswith("twitter.com") and "status" in url:
-            tweet = text(".js-original-tweet .tweet-text", html)
+            tweet = text(".permalink-tweet .tweet-text", html)
             try:
                 username = cs(".permalink-tweet")(html)[0].attrib["data-screen-name"]
                 return "@%s: %s" % (username, tweet)
